@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Relatório{% endblock %}
+
+{% block content %}
+
+<div class="container"> 
+    <div class="row g-3 align-items-center m-3 bg-light p-3"> 
+        <!-- Filtrar pelo status do imóvel se está locado ou não locado -->
+        <div class="col-auto">
+            <form action="{% url 'reports' %}">
+                <label>Status Locação</label>
+                <select name="is_locate" class="form-select" onchange="this.form.submit()">
+                    <option></option> 
+                    <option value="True" {% if request.GET.is_locate == 'True' %}selected{% endif %}>LOCADO</option>
+                    <option value="False" {% if request.GET.is_locate == 'False' %}selected{% endif %}>NÃO LOCADO</option> 
+                </select>
+            </form>
+        </div>
+    
+        <!-- Resetar estado dos filtros -->
+        <div class="col-auto"> 
+            <a class="btn btn-danger" href="{% url 'reports' %}"><i class="fas fa-window-close"></i></a>
+        </div>  
+    </div>
+
+    <!-- Tabela com todas informações de Registro de Locação -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Registro Inicial</th>
+                <th scope="col">Registro Final</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Codigo</th>
+                <th scope="col">Imovel</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Locado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for immobile in immobiles %}
+            <tr>
+                <td scope="row">{{immobile.id}}</td>
+
+                <td scope="row">{% for location in immobile.reg_location.all %}{{location.dt_start|date:"d/m/Y"}}{% endfor %}</td>
+                <td scope="row">{% for location in immobile.reg_location.all %}{{location.dt_end|date:"d/m/Y"}}{% endfor %}</td>
+                <td scope="row">{% for location in immobile.reg_location.all %}{{location.client}}{% endfor %}</td>
+
+                <td scope="row">{{immobile.code}}</td>
+                <td scope="row">{{immobile.type_item}}</td>
+                <td scope="row">R$ {{immobile.price}}</td>
+
+                <td scope="row">
+                    {% if immobile.is_locate == True %}
+                    <i class="fas fa-check-circle fa-2x link-success"></i>
+                    {% else %}
+                    <i class="fas fa-minus-circle fa-2x link-danger"></i>
+                    {% endif %} 
+                </td>
+
+            </tr>  
+            {% endfor %}
+        </tbody>
+    </table> 
+</div>
+
+{% endblock %}
