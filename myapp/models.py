@@ -52,7 +52,7 @@ class RegisterLocation(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     dt_start = models.DateTimeField('Inicio')
     dt_end = models.DateTimeField('Fim')
-    create_ad = models.DateField(default=datetime.now, blank=True)
+    create_at = models.DateField(default=datetime.now, blank=True)
     
     def __str__(self):
         return "{} - {}".format(self.client, self.immobile)
